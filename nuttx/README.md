@@ -47,6 +47,13 @@ script for the overrides).
 `apps/external`, which the apps tree ignores. The NuttX trees get no
 tracked changes.
 
+The apps tree needs the DHCP client fix "netutils/dhcpc: Send the
+REQUEST before using the offered address" (branch
+`dhcpc-broadcast-offer` until it is merged upstream). Without it the
+board sends its DHCP REQUEST from the offered address, and TP-Link Deco
+routers then treat it as a static-IP device: it shows as offline and
+cannot get an address reservation.
+
 Host unit tests for the frame parser:
 
     make -C apps/nibegw/test
