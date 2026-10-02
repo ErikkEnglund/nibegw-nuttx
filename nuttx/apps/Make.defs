@@ -1,0 +1,6 @@
+############################################################################
+# Out-of-tree applications, linked into the NuttX apps tree as
+# apps/external.
+############################################################################
+
+include $(wildcard $(APPDIR)/external/*/Make.defs)

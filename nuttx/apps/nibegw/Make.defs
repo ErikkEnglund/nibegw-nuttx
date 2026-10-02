@@ -1,0 +1,10 @@
+############################################################################
+# nibegw/Make.defs
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+############################################################################
+
+ifneq ($(CONFIG_NIBEGW),)
+CONFIGURED_APPS += $(APPDIR)/external/nibegw
+endif

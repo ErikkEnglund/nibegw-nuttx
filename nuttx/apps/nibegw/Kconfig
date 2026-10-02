@@ -1,0 +1,89 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config NIBEGW
+	tristate "NIBE heat pump RS-485 gateway"
+	default n
+	depends on NET_UDP && SERIAL_TERMIOS
+	---help---
+		Answers a NIBE heat pump on its RS-485 accessory bus as a
+		MODBUS 40 and relays frames over UDP, using the NibeGW protocol of
+		the openHAB and Home Assistant NIBE integrations.
+
+if NIBEGW
+
+config NIBEGW_PROGNAME
+	string "Program name"
+	default "nibegw"
+
+config NIBEGW_PRIORITY
+	int "Gateway task priority"
+	default 150
+	---help---
+		Above NSH so that shell activity does not delay replies to the
+		heat pump.
+
+config NIBEGW_STACKSIZE
+	int "Gateway task stack size"
+	default 4096
+
+config NIBEGW_DEVICE
+	string "Serial device"
+	default "/dev/ttyS1"
+
+config NIBEGW_REMOTE_PORT
+	int "Default remote UDP port"
+	default 9999
+
+config NIBEGW_READ_PORT
+	int "Default local UDP port for read requests"
+	default 10000
+
+config NIBEGW_WRITE_PORT
+	int "Default local UDP port for write requests"
+	default 10001
+
+config NIBEGW_RS485_ADDR
+	hex "Default RS-485 address"
+	default 0x20
+	---help---
+		0x20 is MODBUS 40.
+
+config NIBEGW_CONFIG_PATH
+	string "Settings file"
+	default "/data/nibegw.conf"
+
+config NIBEGW_WATCHDOG
+	bool "Hardware watchdog"
+	default y
+	depends on WATCHDOG
+	---help---
+		The gateway loop feeds the watchdog, so the board resets if the
+		gateway or the whole system hangs.  "nibegw stop" stops the
+		watchdog.
+
+if NIBEGW_WATCHDOG
+
+config NIBEGW_WATCHDOG_DEVPATH
+	string "Watchdog device"
+	default "/dev/watchdog0"
+
+config NIBEGW_WATCHDOG_TIMEOUT
+	int "Watchdog timeout (ms)"
+	default 30000
+
+endif # NIBEGW_WATCHDOG
+
+config NIBEGW_BOOT
+	bool "Boot entry point"
+	default y
+	depends on NSH_LIBRARY && WIRELESS_WAPI && NETUTILS_DHCPC
+	---help---
+		Adds the program nibegwboot.  Set INIT_ENTRYPOINT to
+		"nibegwboot_main" to start NSH and the gateway at boot, together
+		with a task that retries Wi-Fi and DHCP until the board has an
+		address.
+
+endif # NIBEGW
