@@ -1,0 +1,14 @@
+Driftprioritering
+Utetemperatur
+Bräknad framledning
+Framledning bt2
+Kondens retur bt3
+Kondensor fram bt12
+Gradminuter
+Frånluft bt20
+Värde lufthastighet bs1
+Fläkthastighet
+Kompressorfrekvens
+Tillsats
+Varmvatten laddning bt6
+Varmvatten topp bt7
