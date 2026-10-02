@@ -1,11 +1,11 @@
 [NIBL;20261002;8310]
 Divisors		1	10	10	10	10	10	10	10	10	10	1	10	100	10	10
-Date	Time	Prio	BT1 Outdoor Temperature [°C]	Calc. Supply S1 [°C]	BT2 Supply temp S1 [°C]	EP22-BT3 Return temp S3 [°C]	EB100-EP14-BT12 Condensor Out [°C]	Degree Minutes (16 bit)	BT21 Vented air temp. 1 [°C]	BT20 Exhaust air temp. 1 [°C]	EB100-BS1 Air flow	Fan speed current [%]	Compressor Frequency, Actual [Hz]	Int. el.add. Power [kW]	BT6 HW Load [°C]	BT7 HW Top [°C]
+Date	Time	Prio	BT1 Outdoor Temperature [°C]	Calc. Supply S1 [°C]	BT2 Supply temp S1 [°C]	EB100-EP14-BT3 Return temp [°C]	EB100-EP14-BT12 Condensor Out [°C]	Degree Minutes (16 bit)	BT21 Vented air temp. 1 [°C]	BT20 Exhaust air temp. 1 [°C]	EB100-BS1 Air flow	Fan speed current [%]	Compressor Frequency, Actual [Hz]	Int. el.add. Power [kW]	BT6 HW Load [°C]	BT7 HW Top [°C]
 43086
 40004
 43009
 40008
-40128
+40012
 40017
 43005
 40026
