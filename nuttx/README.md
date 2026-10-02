@@ -81,8 +81,10 @@ On the USB console (`./build.sh monitor`):
 If there is no address at boot, for example because the router comes
 back slower than the board after a power cut, a watchdog task retries
 Wi-Fi and DHCP every 30 seconds until it gets one. Once connected, the
-Wi-Fi driver reconnects by itself after drops. The gateway answers the
-heat pump the whole time; only forwarding waits for the network.
+Wi-Fi driver reconnects by itself after drops. The same task renews the
+DHCP lease at the time the router asks for (half the lease by default),
+which NuttX's boot-time DHCP never does. The gateway answers the heat
+pump the whole time; only forwarding waits for the network.
 
 The board asks DHCP for the hostname `nibegw`. Reserve an address for its
 MAC (`ifconfig wlan0` shows it) in the router, so Home Assistant can
