@@ -5,6 +5,7 @@ Framledning bt2
 Kondens retur bt3
 Kondensor fram bt12
 Gradminuter
+Avluft bt21
 Frånluft bt20
 Värde lufthastighet bs1
 Fläkthastighet
@@ -12,3 +13,8 @@ Kompressorfrekvens
 Tillsats
 Varmvatten laddning bt6
 Varmvatten topp bt7
+Hetgas bt14
+Vätskeledning bt15
+Förångare bt16
+Suggas bt17
+Kompressor ineffekt
