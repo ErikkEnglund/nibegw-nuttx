@@ -9,6 +9,15 @@ console and over telnet.
 The firmware has no site-specific settings built in. Wi-Fi and the host
 to forward to are set from NSH and saved in flash.
 
+## Repository
+
+    nibegw/            the NuttX application
+    configs/nibegw/    NuttX configuration for the esp32c3-devkit board
+    tools/pumpsim.py   plays the heat pump for bench tests
+    nibegw.c           the openHAB nibegw for Linux
+    LOG.SET            logging setup for the F730's USB log
+    entries.txt        the log entries wanted in LOG.SET
+
 ## Hardware
 
 ESP32-C3-DevKitC-02 to a MAX485 module powered from 3V3:
@@ -32,20 +41,52 @@ before connecting.
 
 ## Build and flash
 
-Needs the NuttX workspace (`nuttx/` and `apps/` side by side, default
-`~/projects/uiw/nuttx-workspace`), the xPack `riscv-none-elf-gcc` 13.2.0-2
-and `esptool`. `build.sh` looks for them in `~/opt` (see the top of the
-script for the overrides).
+Needs a NuttX workspace (`nuttx/` and `apps/` side by side), and the
+xPack `riscv-none-elf-gcc` 13.2.0-2 and `esptool` on `PATH`.
 
-    ./build.sh configure   # esp32c3-devkit:wifi + configs/nibegw.config
-    ./build.sh build
-    ./build.sh flash       # finds the CP2102N under /dev/serial/by-id
-    ./build.sh monitor     # picocom on the console
-    ./build.sh all         # configure, build, flash
+Out-of-tree applications go in `apps/external`, which the apps tree
+ignores: a plain directory with one symlink per application and two
+wrapper files.
 
-`configure` links `apps/` here into the NuttX apps tree as
-`apps/external`, which the apps tree ignores. The NuttX trees get no
-tracked changes.
+    apps/external/Makefile:
+        MENUDESC = "External Applications"
+        include $(APPDIR)/Directory.mk
+
+    apps/external/Make.defs:
+        include $(wildcard $(APPDIR)/external/*/Make.defs)
+
+    ln -s <this repository>/nibegw apps/external/nibegw
+
+Configure with `configs/nibegw` from this repository, build and flash:
+
+    cd nuttx
+    make distclean
+    ./tools/configure.sh -l <this repository>/configs/nibegw
+    make -j
+    make flash ESPTOOL_PORT=/dev/serial/by-id/<CP2102N>
+
+`configure.sh` uses the configuration where it is: it writes
+`nuttx/.config` from the defconfig and links `nuttx/Make.defs` to
+`configs/nibegw/Make.defs`, which only includes the build rules of the
+in-tree esp32c3-devkit board. The NuttX trees get no tracked changes.
+
+`make distclean` also deletes `apps/Kconfig`, which is generated only
+when it is missing. Run it after adding or removing a link in
+`apps/external`.
+
+To change the configuration, run `make menuconfig`, then
+`make savedefconfig` and copy `nuttx/defconfig` to
+`configs/nibegw/defconfig`. On top of `esp32c3-devkit:wifi` it sets:
+
+- UART1 on GPIO5/6 with RS-485 direction on GPIO4, 9600 baud
+- Wi-Fi station with DHCP, with no credentials built in
+- UDP checksums, off by default without IPv6. Some routers ignore DHCP
+  packets without one when building their client list.
+- the DHCP hostname `nibegw`
+- NSH over telnet
+- the MWDT0 hardware watchdog (`/dev/watchdog0`)
+- the gateway, started together with NSH at boot
+  (`CONFIG_INIT_ENTRYPOINT="nibegwboot_main"`)
 
 The apps tree needs the DHCP client fix "netutils/dhcpc: Send the
 REQUEST before using the offered address" (branch
@@ -56,7 +97,7 @@ cannot get an address reservation.
 
 Host unit tests for the frame parser:
 
-    make -C apps/nibegw/test
+    make -C nibegw/test
 
 ## Flash layout
 
@@ -73,7 +114,7 @@ updates.
 
 ## First-time setup
 
-On the USB console (`./build.sh monitor`):
+On the USB console (115200 baud, e.g. `picocom -b 115200 <port>`):
 
     nsh> wapi psk wlan0 <password> 3
     nsh> wapi essid wlan0 <ssid> 1
@@ -135,7 +176,7 @@ can play the heat pump:
 
     nsh> nibegw stop
     nsh> nibegw start -a <laptop IP>
-    $ ../tools/pumpsim.py --gateway <board IP>
+    $ tools/pumpsim.py --gateway <board IP>
     nsh> nibegw restart
 
 It checks ACK/NAK replies and their latency, that frames for other

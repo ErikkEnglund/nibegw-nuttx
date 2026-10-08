@@ -1,0 +1,1 @@
+include $(TOPDIR)/boards/risc-v/esp32c3/esp32c3-devkit/scripts/Make.defs

@@ -1,5 +1,4 @@
-# NuttX apps build output (nuttx/apps is linked into the NuttX apps tree)
-/nuttx/apps/Kconfig
+# NuttX apps build output (nibegw/ is linked into the NuttX apps tree)
 *.o
 .built
 .depend
@@ -7,4 +6,4 @@ Make.dep
 .kconfig
 
 # Host unit test binary
-/nuttx/apps/nibegw/test/test_proto
+/nibegw/test/test_proto
